@@ -16,13 +16,13 @@ end
 
 # Get the current value for the specified setting
 def get_current_gsetting_value(user, schema, option)
-  output = `sudo -u #{user} dbus-launch gsettings get #{schema} #{option}`
+  output = `sudo -u #{user} gsettings get #{schema} #{option}`
   return output.strip()
 end
 
 action :set do
   value = format_value_for_commandline(new_resource.value)
-  cmd = "dbus-launch gsettings set #{new_resource.schema} #{new_resource.option} #{value}"
+  cmd = "gsettings set #{new_resource.schema} #{new_resource.option} #{value}"
   current_value = get_current_gsetting_value(new_resource.user, new_resource.schema, new_resource.option)
   if current_value != value then
     msg = "Updating gsetting config #{new_resource.schema} #{new_resource.option} "
@@ -36,12 +36,12 @@ end
 
 action :reset do
   if new_resource.recursive then
-    cmd = "dbus-launch gsettings reset-recursively #{new_resource.schema}"
+    cmd = "gsettings reset-recursively #{new_resource.schema}"
     cmd_name = "Recursively unsetting gsettings key '#{new_resource.schema}'"
   else
     schema = new_resource.schema
     key = new_resource.option
-    cmd = "dbus-launch gsettings reset #{schema} #{key}"
+    cmd = "gsettings reset #{schema} #{key}"
     cmd_mame = "Unsetting gsettings key '#{key}'"
   end
   execute cmd_name do
